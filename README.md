@@ -19,7 +19,7 @@ Welcome to **SkillTrade**, a web app built with **Streamlit** that enables users
 
 ### 🛠️ Tech Stack
 
-- **Frontend**: [Streamlit](https://kanwalrafique-q-3-class-9-assignment-skillswapapp-o2lhm8.streamlit.app/)
+- **Frontend**: https://streamlit.io/cloud
 - **Backend**: Python + SQLAlchemy
 - **Database**: SQLite (via SQLAlchemy ORM)
 - **Authentication**: Custom Python logic
@@ -42,6 +42,8 @@ pip install -r requirements.txt
 Run the app
 
 streamlit run app.py
+
+[Streamlit](https://kanwalrafique-q-3-class-9-assignment-skillswapapp-o2lhm8.streamlit.app/)
 
 📂 Folder Structure
 

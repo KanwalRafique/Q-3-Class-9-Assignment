@@ -1,6 +1,6 @@
-#### 💡 SkillTrade — Learn & Earn
+## 💡 SkillTrade — Learn & Earn
 
-`
+---
 Welcome to **SkillTrade**, a web app built with **Streamlit** that enables users to **share**, **book**, and **earn** by exchanging skills in a user-friendly and secure environment. 🚀
 
 ---

@@ -1,4 +1,4 @@
-![Screenshot 2025-05-18 190935](https://github.com/user-attachments/assets/05bc5370-62ad-419a-9412-fc895e403ee2)# 💡 SkillTrade — Learn & Earn
+### 💡 SkillTrade — Learn & Earn
 
 Welcome to **SkillTrade**, a web app built with **Streamlit** that enables users to **share**, **book**, and **earn** by exchanging skills in a user-friendly and secure environment. 🚀
 

@@ -1,4 +1,4 @@
-### 💡 SkillTrade — Learn & Earn
+#### 💡 SkillTrade — Learn & Earn
 
 Welcome to **SkillTrade**, a web app built with **Streamlit** that enables users to **share**, **book**, and **earn** by exchanging skills in a user-friendly and secure environment. 🚀
 
@@ -16,7 +16,7 @@ Welcome to **SkillTrade**, a web app built with **Streamlit** that enables users
 
 ---
 
-## 🛠️ Tech Stack
+### 🛠️ Tech Stack
 
 - **Frontend**: [Streamlit](https://kanwalrafique-q-3-class-9-assignment-skillswapapp-o2lhm8.streamlit.app/)
 - **Backend**: Python + SQLAlchemy
@@ -26,11 +26,11 @@ Welcome to **SkillTrade**, a web app built with **Streamlit** that enables users
 
 ---
 
-## 🚀 Getting Started
+### 🚀 Getting Started
 
 1. **Clone the repo**  
    ```bash
-   git clone https://github.com/your-username/skilltrade.git
+   git clone [https://github.com/your-username/skilltrade.git](https://github.com/KanwalRafique/Q-3-Class-9-Assignment/tree/main)
    cd skilltrade
    ```
 
@@ -39,7 +39,9 @@ Welcome to **SkillTrade**, a web app built with **Streamlit** that enables users
 pip install -r requirements.txt
 
 Run the app
+
 streamlit run app.py
+
 📂 Folder Structure
 
 
@@ -50,10 +52,13 @@ skilltrade/
 ├── payments.py          # Mock payment function
 ├── requirements.txt     # Required packages
 └── README.md            # You’re reading it :)
-👤 Author
-Made with ❤️ by Kanwal Rafiqe
 
-📸 Screenshots
+👤 Author
+
+## Made with ❤️ by Kanwal Rafiqe
+
+📸 
+
 ![Screenshot 2025-05-18 190935](https://github.com/user-attachments/assets/57f9a5bf-8af5-45c6-9026-efb4db94ca2a)
 
 ✍️ Register	📚 Book Skill	🛠️ Add Skill

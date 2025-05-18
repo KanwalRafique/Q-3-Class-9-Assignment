@@ -51,13 +51,9 @@ st.markdown("""
         background-color: #1E1E2F;
         color: #ddd;
     }
-    [data-testid="stSidebar"] .css-1d391kg {
-        color: #ddd;
-    }
     </style>
 """, unsafe_allow_html=True)
 
-# 🎉 Animated Header
 st.markdown('<div class="main-title">💡 SkillTrade — Learn & Earn </div>', unsafe_allow_html=True)
 st.balloons()
 
@@ -70,6 +66,7 @@ if choice == "Register":
     name = st.text_input("👤 Name")
     email = st.text_input("📧 Email")
     password = st.text_input("🔒 Password", type="password")
+
     if st.button("Register"):
         try:
             user = register_user(name, email, password)
@@ -77,7 +74,7 @@ if choice == "Register":
             st.snow()
         except Exception as e:
             session.rollback()
-            st.error("❌ Registration failed. Please try again.")
+            st.error("❌ Registration failed.")
             st.exception(e)
 
 # 🔐 Login
@@ -85,6 +82,7 @@ elif choice == "Login":
     st.subheader("🔐 Login to Your Account")
     email = st.text_input("📧 Email")
     password = st.text_input("🔒 Password", type="password")
+
     if st.button("Login"):
         try:
             user = login_user(email, password)
@@ -101,18 +99,23 @@ elif choice == "Login":
 elif choice == "Add Skill":
     st.subheader("🛠️ Post a New Skill")
     email = st.text_input("📧 Your Email")
+
     try:
         user = session.query(UserDB).filter_by(email=email).first()
         if user:
             title = st.text_input("🎯 Skill Title")
             desc = st.text_area("📝 Skill Description")
+
             if st.button("Add Skill"):
-                new_skill = SkillDB(title=title, description=desc, mentor=user)
-                session.add(new_skill)
-                session.commit()
-                st.success("✅ Skill posted successfully!")
+                if title.strip() == "" or desc.strip() == "":
+                    st.warning("⚠️ Title and description cannot be empty.")
+                else:
+                    new_skill = SkillDB(title=title, description=desc, mentor_id=user.id)
+                    session.add(new_skill)
+                    session.commit()
+                    st.success("✅ Skill posted successfully!")
         else:
-            st.warning("⚠️ Please login first")
+            st.warning("⚠️ Please login first.")
     except Exception as e:
         session.rollback()
         st.error("❌ Error while adding skill.")
@@ -123,6 +126,7 @@ elif choice == "Book Skill":
     st.subheader("📚 Book a Mentor")
     try:
         skills = session.query(SkillDB).all()
+
         for skill in skills:
             st.markdown(f"""
                 <div class="skill-box">
@@ -131,23 +135,28 @@ elif choice == "Book Skill":
             """, unsafe_allow_html=True)
 
             learner_email = st.text_input("📧 Your Email", key=f"email_{skill.id}")
-            
+
             if st.button(f"📅 Book '{skill.title}' with {skill.mentor.name}", key=f"book_{skill.id}"):
                 try:
-                    learner = session.query(UserDB).filter_by(email=learner_email).first()
-                    if learner:
-                        booking = BookingDB(mentor_id=skill.mentor.id, learner_id=learner.id)
-                        session.add(booking)
-                        session.commit()
-                        create_payment(booking.id)
-                        st.success("✅ Booked and paid $10 successfully!")
+                    if learner_email.strip() == "":
+                        st.warning("⚠️ Please enter your email.")
                     else:
-                        st.error("❌ Email not found. Please register or check your login.")
+                        learner = session.query(UserDB).filter_by(email=learner_email).first()
+                        if learner:
+                            booking = BookingDB(mentor_id=skill.mentor.id, learner_id=learner.id)
+                            session.add(booking)
+                            session.commit()
+                            create_payment(booking.id)
+                            st.success("✅ Booked and paid $10 successfully!")
+                        else:
+                            st.error("❌ Email not found. Please register first.")
                 except Exception as e:
                     session.rollback()
                     st.error("❌ Booking failed.")
                     st.exception(e)
+
             st.markdown("</div>", unsafe_allow_html=True)
+
     except Exception as e:
         session.rollback()
         st.error("❌ Failed to load skills.")
@@ -157,6 +166,7 @@ elif choice == "Book Skill":
 elif choice == "Manage Skills":
     st.subheader("🗑️ Manage Your Skills")
     email = st.text_input("📧 Your Email to load skills")
+
     try:
         user = session.query(UserDB).filter_by(email=email).first()
         if user:
@@ -168,21 +178,23 @@ elif choice == "Manage Skills":
                             <h4>🔹 {skill.title}</h4>
                             <p>{skill.description}</p>
                     """, unsafe_allow_html=True)
+
                     if st.button(f"🗑️ Delete '{skill.title}'", key=f"del_{skill.id}"):
                         try:
                             session.delete(skill)
                             session.commit()
-                            st.success(f"✅ Skill '{skill.title}' deleted successfully!")
+                            st.success(f"✅ Skill '{skill.title}' deleted.")
                             st.experimental_rerun()
                         except Exception as e:
                             session.rollback()
                             st.error("❌ Failed to delete skill.")
                             st.exception(e)
+
                     st.markdown("</div>", unsafe_allow_html=True)
             else:
                 st.info("ℹ️ You have not added any skills yet.")
         else:
-            st.warning("⚠️ Please enter a valid email to load your skills.")
+            st.warning("⚠️ Please enter a valid email.")
     except Exception as e:
         session.rollback()
         st.error("❌ Error while loading your skills.")

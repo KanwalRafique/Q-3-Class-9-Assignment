@@ -28,9 +28,10 @@ st.markdown("""
         background-color: #357ABD;
         color: #f0f0f0;
     }
-    /* Skill box with hover */
+    /* Skill box with hover - fixed text color */
     .skill-box {
-        background: #f0f8ff;
+        background: #e6f2ff;
+        color: #000000;
         padding: 15px;
         border-radius: 10px;
         box-shadow: 2px 2px 6px rgba(0,0,0,0.1);

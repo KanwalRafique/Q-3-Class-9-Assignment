@@ -1,32 +1,61 @@
-# SkillTrade — Learn & Earn
+![Screenshot 2025-05-18 190935](https://github.com/user-attachments/assets/05bc5370-62ad-419a-9412-fc895e403ee2)# 💡 SkillTrade — Learn & Earn
 
-SkillTrade is a web application built with Streamlit that allows users to register, post skills, book mentors, and manage their skills. It integrates a simple payment flow for booking skills. This app is designed to connect learners with mentors for skill-sharing and earning opportunities.
-
----
-
-## Features
-
-- **User Registration & Login:** Users can create accounts and log in securely.
-- **Post Skills:** Registered users can post new skills they want to teach.
-- **Book Skills:** Learners can browse skills and book sessions with mentors.
-- **Payment Integration:** Upon booking a skill, a payment process is triggered.
-- **Manage Skills:** Mentors can view and delete their posted skills.
-- **Responsive UI:** Clean, custom styled interface with animations.
+Welcome to **SkillTrade**, a web app built with **Streamlit** that enables users to **share**, **book**, and **earn** by exchanging skills in a user-friendly and secure environment. 🚀
 
 ---
 
-## Tech Stack
+## ✨ Features
 
-- **Python** with **Streamlit** for the frontend and UI.
-- **SQLAlchemy** for database ORM.
-- **SQLite/PostgreSQL** (or any SQL database supported by SQLAlchemy) for data storage.
-- **Custom modules** for authentication (`auth.py`), payments (`payments.py`), and database models (`database.py`).
+- 📝 **Register** as a mentor or learner
+- 🔐 **Login** securely with email and password
+- 🛠️ **Add Skills** as a mentor
+- 📚 **Book Skills** from mentors (includes mock payment)
+- 🗑️ **Manage** and delete your posted skills
+- 🎨 **Beautiful UI** with custom CSS styling
+- 🎈 **Streamlit animations** like balloons and snow
 
 ---
 
-## Installation
+## 🛠️ Tech Stack
 
-1. **Clone the repository:**
+- **Frontend**: [Streamlit](https://kanwalrafique-q-3-class-9-assignment-skillswapapp-o2lhm8.streamlit.app/)
+- **Backend**: Python + SQLAlchemy
+- **Database**: SQLite (via SQLAlchemy ORM)
+- **Authentication**: Custom Python logic
+- **Payments**: Mock function to simulate transactions
+
+---
+
+## 🚀 Getting Started
+
+1. **Clone the repo**  
    ```bash
-   git clone https://github.com/yourusername/skilltrade.git
+   git clone https://github.com/your-username/skilltrade.git
    cd skilltrade
+   ```
+
+   Install dependencies
+
+pip install -r requirements.txt
+
+Run the app
+streamlit run app.py
+📂 Folder Structure
+
+
+skilltrade/
+├── app.py               # Main Streamlit app
+├── auth.py              # Register & Login logic
+├── database.py          # SQLAlchemy models and DB session
+├── payments.py          # Mock payment function
+├── requirements.txt     # Required packages
+└── README.md            # You’re reading it :)
+👤 Author
+Made with ❤️ by Kanwal Rafiqe
+
+📸 Screenshots
+![Screenshot 2025-05-18 190935](https://github.com/user-attachments/assets/57f9a5bf-8af5-45c6-9026-efb4db94ca2a)
+
+✍️ Register	📚 Book Skill	🛠️ Add Skill
+
+

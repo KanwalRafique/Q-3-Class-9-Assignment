@@ -6,7 +6,6 @@ from payments import create_payment
 # 🎨 Custom CSS Styling
 st.markdown("""
     <style>
-    /* Main title */
     .main-title {
         font-size: 42px;
         font-weight: bold;
@@ -14,7 +13,6 @@ st.markdown("""
         text-align: center;
         margin-bottom: 20px;
     }
-    /* Buttons */
     .stButton > button {
         background-color: #4A90E2;
         color: white;
@@ -28,7 +26,6 @@ st.markdown("""
         background-color: #357ABD;
         color: #f0f0f0;
     }
-    /* Skill box with hover - fixed text color */
     .skill-box {
         background: #e6f2ff;
         color: #000000;
@@ -41,7 +38,6 @@ st.markdown("""
     .skill-box:hover {
         box-shadow: 4px 4px 12px rgba(0,0,0,0.2);
     }
-    /* Footer */
     .footer {
         text-align: center;
         padding: 20px 0;
@@ -51,7 +47,6 @@ st.markdown("""
         border-top: 1px solid #ddd;
         margin-top: 40px;
     }
-    /* Sidebar dark styling */
     [data-testid="stSidebar"] {
         background-color: #1E1E2F;
         color: #ddd;
@@ -64,7 +59,7 @@ st.markdown("""
 
 # 🎉 Animated Header
 st.markdown('<div class="main-title">💡 SkillTrade — Learn & Earn </div>', unsafe_allow_html=True)
-st.balloons()  # Animation when app starts
+st.balloons()
 
 menu = ["Login", "Register", "Add Skill", "Book Skill", "Manage Skills"]
 choice = st.sidebar.selectbox("📋 Select Option", menu)
@@ -76,9 +71,14 @@ if choice == "Register":
     email = st.text_input("📧 Email")
     password = st.text_input("🔒 Password", type="password")
     if st.button("Register"):
-        user = register_user(name, email, password)
-        st.success("🎉 Registered successfully!")
-        st.snow()  # Show snow animation
+        try:
+            user = register_user(name, email, password)
+            st.success("🎉 Registered successfully!")
+            st.snow()
+        except Exception as e:
+            session.rollback()
+            st.error("❌ Registration failed. Please try again.")
+            st.exception(e)
 
 # 🔐 Login
 elif choice == "Login":
@@ -86,80 +86,107 @@ elif choice == "Login":
     email = st.text_input("📧 Email")
     password = st.text_input("🔒 Password", type="password")
     if st.button("Login"):
-        user = login_user(email, password)
-        if user:
-            st.success(f"✅ Welcome {user.name} ({user.role})")
-        else:
-            st.error("❌ Invalid credentials")
+        try:
+            user = login_user(email, password)
+            if user:
+                st.success(f"✅ Welcome {user.name} ({user.role})")
+            else:
+                st.error("❌ Invalid credentials")
+        except Exception as e:
+            session.rollback()
+            st.error("❌ Login failed.")
+            st.exception(e)
 
 # ➕ Add Skill
 elif choice == "Add Skill":
     st.subheader("🛠️ Post a New Skill")
     email = st.text_input("📧 Your Email")
-    user = session.query(UserDB).filter_by(email=email).first()
-    if user:
-        title = st.text_input("🎯 Skill Title")
-        desc = st.text_area("📝 Skill Description")
-        if st.button("Add Skill"):
-            new_skill = SkillDB(title=title, description=desc, mentor=user)
-            session.add(new_skill)
-            session.commit()
-            st.success("✅ Skill posted successfully!")
-    else:
-        st.warning("⚠️ Please login first")
+    try:
+        user = session.query(UserDB).filter_by(email=email).first()
+        if user:
+            title = st.text_input("🎯 Skill Title")
+            desc = st.text_area("📝 Skill Description")
+            if st.button("Add Skill"):
+                new_skill = SkillDB(title=title, description=desc, mentor=user)
+                session.add(new_skill)
+                session.commit()
+                st.success("✅ Skill posted successfully!")
+        else:
+            st.warning("⚠️ Please login first")
+    except Exception as e:
+        session.rollback()
+        st.error("❌ Error while adding skill.")
+        st.exception(e)
 
 # 📚 Book Skill
 elif choice == "Book Skill":
     st.subheader("📚 Book a Mentor")
-    skills = session.query(SkillDB).all()
-    for skill in skills:
-        st.markdown(f"""
-            <div class="skill-box">
-                <h4>🔹 {skill.title} — <span style='color:#357ABD;'>{skill.mentor.name}</span></h4>
-                <p>{skill.description}</p>
-        """, unsafe_allow_html=True)
+    try:
+        skills = session.query(SkillDB).all()
+        for skill in skills:
+            st.markdown(f"""
+                <div class="skill-box">
+                    <h4>🔹 {skill.title} — <span style='color:#357ABD;'>{skill.mentor.name}</span></h4>
+                    <p>{skill.description}</p>
+            """, unsafe_allow_html=True)
 
-        # Learner email input shown *before* button
-        learner_email = st.text_input("📧 Your Email", key=f"email_{skill.id}")
-        
-        if st.button(f"📅 Book '{skill.title}' with {skill.mentor.name}", key=f"book_{skill.id}"):
-            learner = session.query(UserDB).filter_by(email=learner_email).first()
-            if learner:
-                booking = BookingDB(mentor_id=skill.mentor.id, learner_id=learner.id)
-                session.add(booking)
-                session.commit()
-                create_payment(booking.id)
-                st.success("✅ Booked and paid $10 successfully!")
-            else:
-                st.error("❌ Email not found. Please register or check your login.")
+            learner_email = st.text_input("📧 Your Email", key=f"email_{skill.id}")
+            
+            if st.button(f"📅 Book '{skill.title}' with {skill.mentor.name}", key=f"book_{skill.id}"):
+                try:
+                    learner = session.query(UserDB).filter_by(email=learner_email).first()
+                    if learner:
+                        booking = BookingDB(mentor_id=skill.mentor.id, learner_id=learner.id)
+                        session.add(booking)
+                        session.commit()
+                        create_payment(booking.id)
+                        st.success("✅ Booked and paid $10 successfully!")
+                    else:
+                        st.error("❌ Email not found. Please register or check your login.")
+                except Exception as e:
+                    session.rollback()
+                    st.error("❌ Booking failed.")
+                    st.exception(e)
+            st.markdown("</div>", unsafe_allow_html=True)
+    except Exception as e:
+        session.rollback()
+        st.error("❌ Failed to load skills.")
+        st.exception(e)
 
-        st.markdown("</div>", unsafe_allow_html=True)
-
-# 🗑️ Manage Skills (delete your skills)
+# 🗑️ Manage Skills
 elif choice == "Manage Skills":
     st.subheader("🗑️ Manage Your Skills")
     email = st.text_input("📧 Your Email to load skills")
-    user = session.query(UserDB).filter_by(email=email).first()
-
-    if user:
-        user_skills = session.query(SkillDB).filter_by(mentor_id=user.id).all()
-        if user_skills:
-            for skill in user_skills:
-                st.markdown(f"""
-                    <div class="skill-box">
-                        <h4>🔹 {skill.title}</h4>
-                        <p>{skill.description}</p>
-                """, unsafe_allow_html=True)
-                if st.button(f"🗑️ Delete '{skill.title}'", key=f"del_{skill.id}"):
-                    session.delete(skill)
-                    session.commit()
-                    st.success(f"✅ Skill '{skill.title}' deleted successfully!")
-                    st.experimental_rerun()  # Refresh page to update list
-                st.markdown("</div>", unsafe_allow_html=True)
+    try:
+        user = session.query(UserDB).filter_by(email=email).first()
+        if user:
+            user_skills = session.query(SkillDB).filter_by(mentor_id=user.id).all()
+            if user_skills:
+                for skill in user_skills:
+                    st.markdown(f"""
+                        <div class="skill-box">
+                            <h4>🔹 {skill.title}</h4>
+                            <p>{skill.description}</p>
+                    """, unsafe_allow_html=True)
+                    if st.button(f"🗑️ Delete '{skill.title}'", key=f"del_{skill.id}"):
+                        try:
+                            session.delete(skill)
+                            session.commit()
+                            st.success(f"✅ Skill '{skill.title}' deleted successfully!")
+                            st.experimental_rerun()
+                        except Exception as e:
+                            session.rollback()
+                            st.error("❌ Failed to delete skill.")
+                            st.exception(e)
+                    st.markdown("</div>", unsafe_allow_html=True)
+            else:
+                st.info("ℹ️ You have not added any skills yet.")
         else:
-            st.info("ℹ️ You have not added any skills yet.")
-    else:
-        st.warning("⚠️ Please enter a valid email to load your skills.")
+            st.warning("⚠️ Please enter a valid email to load your skills.")
+    except Exception as e:
+        session.rollback()
+        st.error("❌ Error while loading your skills.")
+        st.exception(e)
 
 # Footer
 st.markdown("""

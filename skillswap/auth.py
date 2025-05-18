@@ -2,10 +2,19 @@
 from database import session, UserDB
 
 def register_user(name, email, password):
-    user = UserDB(name=name, email=email, password=password)
-    session.add(user)
-    session.commit()
-    return user
+    try:
+        user = UserDB(name=name, email=email, password=password, role='learner')
+        session.add(user)
+        session.commit()
+        return user
+    except Exception as e:
+        session.rollback()
+        raise e
 
 def login_user(email, password):
-    return session.query(UserDB).filter_by(email=email, password=password).first()
+    try:
+        user = session.query(UserDB).filter_by(email=email, password=password).first()
+        return user
+    except Exception as e:
+        session.rollback()
+        raise e
